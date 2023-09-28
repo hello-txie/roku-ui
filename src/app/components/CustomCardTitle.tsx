@@ -14,11 +14,11 @@ interface ICustomCardTitle {
 export const CustomCardTitle: React.FunctionComponent<ICustomCardTitle> = ({title, info}) => {
   return (
      <CardTitle>
-      <Text component={TextVariants.p}>
-        {title}
-      </Text>
       <TextContent>
-        <Text component={TextVariants.small}>
+        <Text component={TextVariants.h2}>
+          {title}
+        </Text>
+        <Text component={TextVariants.h6}>
           {info}
         </Text>
       </TextContent>
