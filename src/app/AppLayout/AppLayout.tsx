@@ -1,47 +1,85 @@
-import * as React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React from 'react';
 import {
   Brand,
-  Button,
   Masthead,
   MastheadBrand,
+  MastheadContent,
   MastheadMain,
   MastheadToggle,
-	Nav,
-  NavExpandable,
+  Nav,
   NavItem,
-	NavList,
-	Page,
-	PageSidebar,
+  NavList,
+  Page,
+  PageSection,
+  PageSectionVariants,
+  PageSidebar,
   PageSidebarBody,
-	SkipToContent
+  PageToggleButton,
+  SkipToContent,
+  Text,
+  TextContent,
+  NavExpandable
 } from '@patternfly/react-core';
+import BarsIcon from '@patternfly/react-icons/dist/esm/icons/bars-icon';
+import pfLogo from '@app/bgimages/Patternfly-Logo.svg';
 import { IAppRoute, IAppRouteGroup, routes } from '@app/routes';
-import logo from '@app/bgimages/Patternfly-Logo.svg';
-import { BarsIcon } from '@patternfly/react-icons';
+import { NavLink } from 'react-router-dom';
+import { HeaderProfile } from '@app/components/HeaderProfile';
 
 interface IAppLayout {
   children: React.ReactNode;
 }
 
-const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = React.useState(true);
-  const Header = (
+export const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const menuRef = React.useRef<HTMLDivElement>(null);
+  const toggleRef = React.useRef<HTMLButtonElement>(null);
+
+  const handleMenuKeys = (event: KeyboardEvent) => {
+    if (!isOpen) {
+      return;
+    }
+    if (menuRef.current?.contains(event.target as Node) || toggleRef.current?.contains(event.target as Node)) {
+      if (event.key === 'Escape') {
+        setIsOpen(!isOpen);
+        toggleRef.current?.focus();
+      }
+    }
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (isOpen && !menuRef.current?.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  React.useEffect(() => {
+    window.addEventListener('keydown', handleMenuKeys);
+    window.addEventListener('click', handleClickOutside);
+
+    return () => {
+      window.removeEventListener('keydown', handleMenuKeys);
+      window.removeEventListener('click', handleClickOutside);
+    };
+  }, [isOpen, menuRef]);
+
+  const masthead = (
     <Masthead>
       <MastheadToggle>
-        <Button variant="plain" onClick={() => setSidebarOpen(!sidebarOpen)} aria-label="Global navigation">
+        <PageToggleButton variant="plain" aria-label="Global navigation">
           <BarsIcon />
-        </Button>
+        </PageToggleButton>
       </MastheadToggle>
       <MastheadMain>
         <MastheadBrand>
-          <Brand src={logo} alt="Patterfly Logo" heights={{ default: '36px' }} />
+          <Brand src={pfLogo} alt="PatternFly" heights={{ default: '36px' }} />
         </MastheadBrand>
       </MastheadMain>
+      <MastheadContent>
+        <HeaderProfile />
+      </MastheadContent>
     </Masthead>
   );
-
-  const location = useLocation();
 
   const renderNavItem = (route: IAppRoute, index: number) => (
     <NavItem key={`${route.label}-${index}`} id={`${route.label}-${index}`} isActive={route.path === location.pathname}>
@@ -72,7 +110,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     </Nav>
   );
 
-  const Sidebar = (
+  const sidebar = (
     <PageSidebar theme="dark" >
       <PageSidebarBody>
         {Navigation}
@@ -80,26 +118,31 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     </PageSidebar>
   );
 
-  const pageId = 'primary-app-container';
+  const mainContainerId = 'main-content-page-layout-tertiary-nav';
 
-  const PageSkipToContent = (
-    <SkipToContent onClick={(event) => {
-      event.preventDefault();
-      const primaryContentContainer = document.getElementById(pageId);
-      primaryContentContainer && primaryContentContainer.focus();
-    }} href={`#${pageId}`}>
-      Skip to Content
-    </SkipToContent>
-  );
+  const pageSkipToContent = <SkipToContent href={`#${mainContainerId}`}>Skip to content</SkipToContent>;
+
   return (
     <Page
-      mainContainerId={pageId}
-      header={Header}
-      sidebar={sidebarOpen && Sidebar}
-      skipToContent={PageSkipToContent}>
+      header={masthead}
+      sidebar={sidebar}
+      isManagedSidebar
+      skipToContent={pageSkipToContent}
+      mainContainerId={mainContainerId}
+      isTertiaryNavWidthLimited
+      isBreadcrumbWidthLimited
+      isTertiaryNavGrouped
+      isBreadcrumbGrouped
+      additionalGroupedContent={
+        <PageSection variant={PageSectionVariants.light}>
+          <TextContent>
+            <Text component="h1">Project Roku</Text>
+            <Text component="p">This is a Project Roku demo.</Text>
+          </TextContent>
+        </PageSection>
+      }
+    >
       {children}
     </Page>
   );
 };
-
-export { AppLayout };

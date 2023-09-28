@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { Route, RouteComponentProps, Switch, useLocation } from 'react-router-dom';
-import { Dashboard } from '@app/Dashboard/Dashboard';
-import { Support } from '@app/Support/Support';
-import { GeneralSettings } from '@app/Settings/General/GeneralSettings';
-import { ProfileSettings } from '@app/Settings/Profile/ProfileSettings';
+import { Downloads } from '@app/Pages/Downloads';
 import { NotFound } from '@app/NotFound/NotFound';
 import { useDocumentTitle } from '@app/utils/useDocumentTitle';
+import { InitialLogin } from './Pages/InitialLogin';
+import { useKeycloak } from '@react-keycloak/web';
 
 let routeFocusTimer: number;
 export interface IAppRoute {
@@ -28,38 +27,12 @@ export type AppRouteConfig = IAppRoute | IAppRouteGroup;
 
 const routes: AppRouteConfig[] = [
   {
-    component: Dashboard,
+    component: Downloads,
     exact: true,
-    label: 'Dashboard',
+    label: 'Downloads',
     path: '/',
-    title: 'PatternFly Seed | Main Dashboard',
-  },
-  {
-    component: Support,
-    exact: true,
-    label: 'Support',
-    path: '/support',
-    title: 'PatternFly Seed | Support Page',
-  },
-  {
-    label: 'Settings',
-    routes: [
-      {
-        component: GeneralSettings,
-        exact: true,
-        label: 'General',
-        path: '/settings/general',
-        title: 'PatternFly Seed | General Settings',
-      },
-      {
-        component: ProfileSettings,
-        exact: true,
-        label: 'Profile',
-        path: '/settings/profile',
-        title: 'PatternFly Seed | Profile Settings',
-      },
-    ],
-  },
+    title: 'Downloads',
+  }
 ];
 
 // a custom hook for sending focus to the primary content container
@@ -82,10 +55,12 @@ const useA11yRouteChange = () => {
 };
 
 const RouteWithTitleUpdates = ({ component: Component, title, ...rest }: IAppRoute) => {
+  const { keycloak } = useKeycloak();
   useA11yRouteChange();
   useDocumentTitle(title);
 
   function routeWithTitle(routeProps: RouteComponentProps) {
+    // return keycloak.authenticated ? <Component {...rest} {...routeProps} /> : <InitialLogin /> ;
     return <Component {...rest} {...routeProps} />;
   }
 
