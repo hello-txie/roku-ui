@@ -8,8 +8,8 @@ export const CertifiedOperators: React.FunctionComponent = () => {
   const [areAllExpanded, setAreAllExpanded] = React.useState(false);
   const [collapseAllAriaLabel, setCollapseAllAriaLabel] = React.useState('Expand all');
   const [expandedServerNames, setExpandedServerNames] = React.useState(initialExpandedServerNames);
-	const [channelSelection, setChannelSelection] = React.useState("")
-  const [channelOptions, setChannelOptions] = React.useState([<FormSelectOption key={-1} value="" label="Please Select a Channel"  isPlaceholder/>]);
+	const [operatorSelection, setOperatorSelection] = React.useState("")
+  const [operatorOptions, setOperatorOptions] = React.useState([<FormSelectOption key={-1} value="" label="Please Select an Operator"  isPlaceholder/>]);
   const [versionSelection, setVersionSelection] = React.useState("")
   const [versionOptions, setVersionOptions] = React.useState([<FormSelectOption key={-1} value="" label="Please Select a Version"  isPlaceholder/>]);
 
@@ -17,18 +17,18 @@ export const CertifiedOperators: React.FunctionComponent = () => {
     const allExpanded = expandedServerNames.length === serverData.length;
     setAreAllExpanded(allExpanded);
     setCollapseAllAriaLabel(allExpanded ? 'Collapse all' : 'Expand all');
-    setChannelOptions([<FormSelectOption key={-1} value="" label="Please Select a Channel"  isPlaceholder/>, <FormSelectOption key="stable" value="stable" label="stable" />])
+    setOperatorOptions([<FormSelectOption key={-1} value="" label="Please Select an Operator"  isPlaceholder/>, <FormSelectOption key="stable" value="stable" label="stable" />])
     setVersionOptions([<FormSelectOption key={-1} value="" label="Please Select a Version"  isPlaceholder/>, <FormSelectOption key="4.12" value="4.12" label="4.12" />])
   }, [expandedServerNames]);
 
-  const onChannelFocus = () => {
-    const element = document.getElementById('toggle-channel');
+  const onOperatorFocus = () => {
+    const element = document.getElementById('toggle-operator');
     element?.focus();
   };
 
-  const onChannelSelect = (_event: React.FormEvent<HTMLSelectElement>, value: string) => {
-    onChannelFocus();
-    setChannelSelection(value)
+  const onOperatorSelect = (_event: React.FormEvent<HTMLSelectElement>, value: string) => {
+    onOperatorFocus();
+    setOperatorSelection(value)
   };
 
   const onVersionFocus = () => {
@@ -58,23 +58,23 @@ export const CertifiedOperators: React.FunctionComponent = () => {
     setExpandedServerNames(isOpen ? [...serverData.map((server) => server.name)] : []);
   };
 
-  const expandableColumns = ['Name', 'Channel', 'Version', 'Download'];
+  const expandableColumns = ['Name', 'Operator', 'Version', 'Download'];
 
   const serverData = [
     {
       name: 'Red Hat Certified Operators',
-      channel: (
+      operator: (
         <FormSelect
-          value={channelSelection}
-          onChange={onChannelSelect}
-          id="toggle-channel"
+          value={operatorSelection}
+          onChange={onOperatorSelect}
+          id="toggle-operator"
           name="horizontal-form-title"
           aria-label="Your title"
         >
-          {channelOptions}
+          {operatorOptions}
         </FormSelect>
       ),
-      applications: (
+      version: (
         <FormSelect
           value={versionSelection}
           onChange={onVersionSelect}
@@ -142,8 +142,8 @@ export const CertifiedOperators: React.FunctionComponent = () => {
 								<ExpandableRowContent>{server.details}</ExpandableRowContent>
 								</Td>
 								<Td>{server?.name}</Td>
-								<Td>{server?.channel}</Td>
-								<Td>{server?.applications}</Td>
+								<Td>{server?.operator}</Td>
+								<Td>{server?.version}</Td>
 								<Td>{server?.download}</Td>
 							</Tr>
 							<Tr isExpanded={isServerExpanded(server)}>

@@ -73,7 +73,7 @@ export const OperatorBundle: React.FunctionComponent = () => {
           {channelOptions}
         </FormSelect>
       ),
-      applications: (
+      version: (
         <FormSelect
           value={versionSelection}
           onChange={onVersionSelect}
@@ -142,7 +142,7 @@ export const OperatorBundle: React.FunctionComponent = () => {
 								</Td>
 								<Td>{server?.name}</Td>
 								<Td>{server?.channel}</Td>
-								<Td>{server?.applications}</Td>
+								<Td>{server?.version}</Td>
 								<Td>{server?.download}</Td>
 							</Tr>
 							<Tr isExpanded={isServerExpanded(server)}>
