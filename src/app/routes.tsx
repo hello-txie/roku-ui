@@ -60,8 +60,8 @@ const RouteWithTitleUpdates = ({ component: Component, title, ...rest }: IAppRou
   useDocumentTitle(title);
 
   function routeWithTitle(routeProps: RouteComponentProps) {
-    // return keycloak.authenticated ? <Component {...rest} {...routeProps} /> : <InitialLogin /> ;
-    return <Component {...rest} {...routeProps} />;
+    return keycloak.authenticated ? <Component {...rest} {...routeProps} /> : <InitialLogin /> ;
+    //return <Component {...rest} {...routeProps} />;
   }
 
   return <Route render={routeWithTitle} {...rest} />;
